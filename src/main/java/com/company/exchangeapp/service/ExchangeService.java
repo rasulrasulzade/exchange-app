@@ -40,11 +40,14 @@ public class ExchangeService {
 
     private final ExchangeSpreadRepository exchangeSpreadRepository;
 
-    public ExchangeService(WebClient.Builder webClientBuilder, ExchangeRateRepository exchangeRateRepository, ExchangeUtil exchangeUtil, ExchangeSpreadRepository exchangeSpreadRepository) {
+    private final AuditService auditService;
+
+    public ExchangeService(WebClient.Builder webClientBuilder, ExchangeRateRepository exchangeRateRepository, ExchangeUtil exchangeUtil, ExchangeSpreadRepository exchangeSpreadRepository, AuditService auditService) {
         this.webClientBuilder = webClientBuilder;
         this.exchangeRateRepository = exchangeRateRepository;
         this.exchangeUtil = exchangeUtil;
         this.exchangeSpreadRepository = exchangeSpreadRepository;
+        this.auditService = auditService;
     }
 
     @Scheduled(cron = "0 5 00 * * ?", zone = "GMT")
@@ -71,6 +74,10 @@ public class ExchangeService {
         if (rates.size() == 0) {
             throw new CustomException("Not found!", HttpStatus.NOT_FOUND);
         }
+
+        //save currencies to audit table
+        auditService.saveCurrency(new java.sql.Date(System.currentTimeMillis()), fromCurrency);
+        auditService.saveCurrency(new java.sql.Date(System.currentTimeMillis()), toCurrency);
 
         Map<String, BigDecimal> rateMap = new HashMap<>();
         for (ExchangeRateMapping ob : rates) {

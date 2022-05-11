@@ -33,4 +33,14 @@ CREATE TABLE exchange_spread
     id         BIGINT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
     currency   VARCHAR(3)     NOT NULL,
     percentage DECIMAL(19, 2) NOT NULL
+);
+
+DROP TABLE IF EXISTS requested_currency;
+
+CREATE TABLE requested_currency
+(
+    id         BIGINT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    date       Date,
+    currency   VARCHAR(3)     NOT NULL
+
 )
