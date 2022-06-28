@@ -15,7 +15,7 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
             "from ExchangeRate er\n" +
             "left join ExchangeRateMapping erm\n" +
             "on er.id=erm.exchangeRateId\n" +
-            "where er.base = ?1 and (erm.currency = ?2 OR erm.currency = ?3)")
+            "where er.base = ?1 and (erm.currency = ?2 OR erm.currency = ?3) ORDER BY er.date")
     Set<ExchangeRateMapping> findByBaseAndCurrency(String base, String fromCurrency, String toCurrency);
 
     @Query("select erm \n" +
